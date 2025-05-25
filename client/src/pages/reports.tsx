@@ -149,9 +149,9 @@ export default function Reports() {
               <CardHeader>
                 <CardTitle className="text-black">Employee Distribution by Department</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="h-[350px]">
-                  <Bar data={departmentData} options={options} />
+              <CardContent className="pt-6">
+                <div className="h-[350px] w-full">
+                  <Bar data={departmentData} options={options} height={350} />
                 </div>
               </CardContent>
             </Card>
@@ -162,9 +162,9 @@ export default function Reports() {
               <CardHeader>
                 <CardTitle className="text-black">Attendance Trends (Last 6 Months)</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="h-[350px]">
-                  <Bar data={attendanceData} options={options} />
+              <CardContent className="pt-6">
+                <div className="h-[350px] w-full">
+                  <Bar data={attendanceData} options={options} height={350} />
                 </div>
               </CardContent>
             </Card>
@@ -175,9 +175,9 @@ export default function Reports() {
               <CardHeader>
                 <CardTitle className="text-black">Employee Turnover (Last 6 Months)</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="h-[350px]">
-                  <Bar data={turnoverData} options={options} />
+              <CardContent className="pt-6">
+                <div className="h-[350px] w-full">
+                  <Bar data={turnoverData} options={options} height={350} />
                 </div>
               </CardContent>
             </Card>

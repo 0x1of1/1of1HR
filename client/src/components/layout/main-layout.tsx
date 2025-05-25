@@ -35,12 +35,12 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
         <Header onOpenSidebar={() => setSidebarOpen(true)} />
         
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto bg-slate-100 p-4 md:p-6">
+        <main className="flex-1 overflow-y-auto bg-white p-4 md:p-6">
           {/* Page header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
+            <h1 className="text-2xl font-bold text-black">{title}</h1>
             {subtitle && (
-              <p className="text-sm text-slate-500">{subtitle}</p>
+              <p className="text-sm text-gray-500">{subtitle}</p>
             )}
           </div>
           
