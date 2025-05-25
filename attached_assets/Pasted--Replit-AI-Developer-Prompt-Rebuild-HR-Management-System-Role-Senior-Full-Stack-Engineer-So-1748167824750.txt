@@ -1,0 +1,118 @@
+# Replit AI Developer Prompt: Rebuild HR Management System
+
+## Role: Senior Full-Stack Engineer & Solution Architect
+You are an expert full-stack engineer and architect. Your task is to design and implement a modern, modular HR management system from scratch, using best-in-class technologies and practices. You have autonomy to choose the most suitable stack for both frontend and backend, provided the solution is maintainable, scalable, and user-friendly.
+
+---
+
+## Project Overview
+Rebuild a modular HR management system with clear separation between backend and frontend. The system must support authentication, user management, HR workflows, analytics, and advanced enterprise features. The current codebase uses PHP (Laravel, custom modules) and Next.js/React for the frontend, but you may select any modern stack.
+
+---
+
+## Objectives
+- Architect a maintainable, modular, and scalable HR management platform.
+- Implement all core and advanced features (see below) with a clean, modern UI/UX.
+- Use best practices for security, testing, and documentation.
+- Provide Docker-based local development setup.
+
+---
+
+## Requirements
+
+### User Roles & Permissions
+- The system must support multiple user types: Admin, Manager, Employee, and Customer Support.
+- Each user type has different permissions and access levels (e.g., only managers can set job descriptions, only admins can manage users, etc.).
+- All features must respect these role-based permissions.
+
+### Frontend
+- Use a modern SPA framework (e.g., React, Next.js, Vue, SvelteKit).
+- Component-based architecture.
+- Utility-first CSS (e.g., Tailwind CSS).
+- Implement authentication (login/logout), user dashboard, HR features.
+- Form validation, state management, API integration.
+- Responsive, accessible UI.
+- Advanced analytics dashboard with drill-down capabilities and rich graphical interface (charts, graphs, etc.) for all users.
+- Quick guide/tips for each user type on how to use the system.
+
+### Backend
+- Use a robust web framework (e.g., Node.js/Express/NestJS, Django/FastAPI, Go, or Laravel).
+- RESTful API design.
+- JWT-based authentication.
+- Modular structure: models, controllers, routes, services.
+- Database integration (PostgreSQL, MySQL, or MongoDB).
+- Seeders/migrations for initial data.
+- Docker support.
+- Document management system with versioning.
+- Performance review module with customizable templates.
+- Notification system for workflow approvals.
+- Notification/message/communication system between users (manager, admin, employees).
+- Job description management for employees, set by their manager.
+- Feature to print/export all personal information for users.
+
+### Features
+- User authentication (login/logout, session management).
+- User roles and permissions (Admin, Manager, Employee, Customer Support).
+- Employee management (CRUD).
+- HR workflows (leave requests, approvals, etc.).
+- File uploads (documents, profile pictures).
+- Document management with versioning.
+- Performance review module with customizable templates.
+- Dashboard with advanced analytics, drill-down, and charts.
+- API endpoints for all major actions.
+- Admin panel for managing users and HR data.
+- Notification system for workflow approvals.
+- Internal messaging/communication system between users.
+- Job description management by managers.
+- Print/export personal information feature.
+- Customer support module.
+- Quick guide/tips for each user type.
+
+### Project Structure
+- Separate folders for frontend and backend.
+- Use environment variables for configuration.
+- Documentation for setup and usage.
+- Dockerfiles and docker-compose for easy setup.
+
+### Reference Modules & Libraries
+- Frontend: Next.js, React, Tailwind CSS, Axios, React Hook Form, Zod, Radix UI, Recharts, Chart.js, or similar for analytics.
+- Backend: Express/NestJS, JWT, Sequelize/TypeORM/Prisma, Multer, bcrypt, libraries for document versioning and notifications.
+- Database: PostgreSQL or MySQL.
+- Testing: Jest, Supertest, React Testing Library.
+
+---
+
+## Reference Documentation
+- Next.js: https://nextjs.org/docs
+- React: https://react.dev/learn
+- Tailwind CSS: https://tailwindcss.com/docs
+- Express: https://expressjs.com/
+- NestJS: https://docs.nestjs.com/
+- Sequelize: https://sequelize.org/master/
+- Prisma: https://www.prisma.io/docs/
+- JWT: https://jwt.io/introduction
+- Docker Compose: https://docs.docker.com/compose/
+- PostgreSQL: https://www.postgresql.org/docs/
+- Chart.js: https://www.chartjs.org/docs/latest/
+
+---
+
+## Additional Instructions
+- Use TypeScript for both frontend and backend if possible.
+- Prioritize security, scalability, and code readability.
+- Provide clear README instructions for local development and deployment.
+- Suggest improvements or modern best practices where appropriate.
+- Ensure all features are accessible and user-friendly for all user types.
+
+---
+
+## Current Structure (for reference)
+- Frontend/ (Next.js, Tailwind, Radix UI, etc.)
+- app/, core/, database/, resources/ (PHP backend, modular, with models, APIs, and utilities)
+- 1of1hr/ (Laravel-based, possibly legacy or monolithic backend)
+- Uses Docker for orchestration
+
+---
+
+## Goal
+Deliver a modern, modular HR management system with all core and advanced features, a clean codebase, and full documentation. Suggest improvements and best practices as you see fit.
