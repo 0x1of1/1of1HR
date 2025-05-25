@@ -13,6 +13,7 @@ import Messages from "@/pages/messages";
 import Documents from "@/pages/documents";
 import JobDescriptions from "@/pages/job-descriptions";
 import PerformanceReviews from "@/pages/performance-reviews";
+import { AuthProvider } from "./hooks/use-auth";
 
 function Router() {
   return (
@@ -34,8 +35,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Router />
+        <AuthProvider>
+          <Toaster />
+          <Router />
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

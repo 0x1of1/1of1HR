@@ -55,8 +55,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Department stats endpoint
   app.get("/api/department-stats", async (req, res, next) => {
     try {
-      const stats = await storage.getAllDepartmentStats();
-      res.json(stats);
+      if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+      
+      // Get all department stats from storage
+      try {
+        const stats = await storage.getAllDepartmentStats();
+        res.json(stats);
+      } catch (err) {
+        console.error("Error fetching department stats:", err);
+        res.status(500).json({ message: "Error fetching department statistics" });
+      }
     } catch (error) {
       next(error);
     }
@@ -69,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user!.id;
       const tasks = await storage.getTasksByAssignee(userId);
-      const pendingTasks = tasks.filter(task => !task.completed);
+      const pendingTasks = tasks.filter((task: any) => !task.completed);
       res.json(pendingTasks);
     } catch (error) {
       next(error);
@@ -86,8 +94,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // For simplicity, returning a subset of users - in a real app would filter by department or team
       const teammates = allUsers
-        .filter(u => u.id !== userId && u.department === req.user!.department)
-        .map(user => ({
+        .filter((u: any) => u.id !== userId && u.department === req.user!.department)
+        .map((user: any) => ({
           ...user,
           status: Math.random() > 0.7 ? "offline" : Math.random() > 0.5 ? "away" : "online" // Randomly assign status
         }));
