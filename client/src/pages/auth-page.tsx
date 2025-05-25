@@ -355,52 +355,52 @@ export default function AuthPage() {
       </div>
       
       {/* Hero Section */}
-      <div className="hidden lg:flex flex-1 bg-primary-900 p-8 items-center justify-center">
+      <div className="hidden lg:flex flex-1 bg-white p-8 items-center justify-center">
         <div className="max-w-md">
-          <h1 className="text-3xl font-bold mb-4 text-white">HR Management Simplified</h1>
-          <p className="text-lg mb-6 text-slate-200">
+          <h1 className="text-3xl font-bold mb-4 text-black">HR Management Simplified</h1>
+          <p className="text-lg mb-6 text-black">
             Streamline your HR operations with our comprehensive management system. Manage employees, handle leave requests, and oversee performance reviews all in one place.
           </p>
           <ul className="space-y-2">
             <li className="flex items-center">
-              <div className="w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center mr-3">
+              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3">
                 <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-slate-100 font-medium">Role-based access control</span>
+              <span className="text-black font-medium">Role-based access control</span>
             </li>
             <li className="flex items-center">
-              <div className="w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center mr-3">
+              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3">
                 <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-slate-100 font-medium">Employee management system</span>
+              <span className="text-black font-medium">Employee management system</span>
             </li>
             <li className="flex items-center">
-              <div className="w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center mr-3">
+              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3">
                 <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-slate-100 font-medium">Document management with versioning</span>
+              <span className="text-black font-medium">Document management with versioning</span>
             </li>
             <li className="flex items-center">
-              <div className="w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center mr-3">
+              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3">
                 <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span>Performance review tools</span>
+              <span className="text-black font-medium">Performance review tools</span>
             </li>
             <li className="flex items-center">
-              <div className="w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center mr-3">
+              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3">
                 <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span>Advanced analytics dashboard</span>
+              <span className="text-black font-medium">Advanced analytics dashboard</span>
             </li>
           </ul>
         </div>
