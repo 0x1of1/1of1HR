@@ -11,8 +11,12 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
+import { seedTestUsers } from "./seed";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Seed default test users
+  await seedTestUsers();
+  
   // Setup multer for file uploads
   const uploadsDir = path.join(process.cwd(), "uploads");
   if (!fs.existsSync(uploadsDir)) {
