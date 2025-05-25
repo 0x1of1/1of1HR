@@ -90,24 +90,27 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
           <ul className="space-y-1">
             {navigationItems.map((item) => (
               <li key={item.href}>
-                <Link href={item.href}>
-                  <a
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                      location === item.href
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700 hover:bg-gray-100 hover:text-black"
-                    )}
-                  >
-                    {item.icon}
-                    <span>{item.label}</span>
-                    {item.label === "Messages" && (
-                      <span className="ml-auto bg-blue-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
-                        3
-                      </span>
-                    )}
-                  </a>
-                </Link>
+                <div
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer",
+                    location === item.href
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-700 hover:bg-gray-100 hover:text-black"
+                  )}
+                  onClick={() => {
+                    window.history.pushState(null, "", item.href);
+                    window.dispatchEvent(new PopStateEvent("popstate"));
+                    if (isMobile && onClose) onClose();
+                  }}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                  {item.label === "Messages" && (
+                    <span className="ml-auto bg-blue-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                      3
+                    </span>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
@@ -121,19 +124,22 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
               <ul className="mt-2 space-y-1">
                 {managerTools.map((item) => (
                   <li key={item.href}>
-                    <Link href={item.href}>
-                      <a
-                        className={cn(
-                          "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                          location === item.href
-                            ? "bg-blue-500 text-white"
-                            : "text-gray-700 hover:bg-gray-100 hover:text-black"
-                        )}
-                      >
-                        {item.icon}
-                        <span>{item.label}</span>
-                      </a>
-                    </Link>
+                    <div
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer",
+                        location === item.href
+                          ? "bg-blue-500 text-white"
+                          : "text-gray-700 hover:bg-gray-100 hover:text-black"
+                      )}
+                      onClick={() => {
+                        window.history.pushState(null, "", item.href);
+                        window.dispatchEvent(new PopStateEvent("popstate"));
+                        if (isMobile && onClose) onClose();
+                      }}
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </div>
                   </li>
                 ))}
               </ul>
