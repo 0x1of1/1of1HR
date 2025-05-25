@@ -1,0 +1,105 @@
+import express, { type Express } from "express";
+import { createServer, type Server } from "http";
+import { setupAuth } from "./auth";
+import { registerEmployeeRoutes } from "./routes/employees";
+import { registerLeaveRequestRoutes } from "./routes/leave-requests";
+import { registerDocumentRoutes } from "./routes/documents";
+import { registerMessageRoutes } from "./routes/messages";
+import { registerJobDescriptionRoutes } from "./routes/job-descriptions";
+import { registerPerformanceReviewRoutes } from "./routes/performance-reviews";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { storage } from "./storage";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup multer for file uploads
+  const uploadsDir = path.join(process.cwd(), "uploads");
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const ext = path.extname(file.originalname);
+      cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+    }
+  });
+
+  const upload = multer({ storage });
+  app.use("/uploads", (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    next();
+  });
+  
+  // Serve static files from uploads directory
+  app.use("/uploads", express.static(uploadsDir));
+
+  // Setup authentication
+  setupAuth(app);
+
+  // Register API routes
+  registerEmployeeRoutes(app);
+  registerLeaveRequestRoutes(app);
+  registerDocumentRoutes(app, upload);
+  registerMessageRoutes(app);
+  registerJobDescriptionRoutes(app);
+  registerPerformanceReviewRoutes(app);
+
+  // Department stats endpoint
+  app.get("/api/department-stats", async (req, res, next) => {
+    try {
+      const stats = await storage.getAllDepartmentStats();
+      res.json(stats);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Dashboard tasks endpoint
+  app.get("/api/tasks/pending", async (req, res, next) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    
+    try {
+      const userId = req.user!.id;
+      const tasks = await storage.getTasksByAssignee(userId);
+      const pendingTasks = tasks.filter(task => !task.completed);
+      res.json(pendingTasks);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Team members endpoint for dashboard
+  app.get("/api/team-members", async (req, res, next) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    
+    try {
+      const userId = req.user!.id;
+      const allUsers = await storage.getAllUsers();
+      
+      // For simplicity, returning a subset of users - in a real app would filter by department or team
+      const teammates = allUsers
+        .filter(u => u.id !== userId && u.department === req.user!.department)
+        .map(user => ({
+          ...user,
+          status: Math.random() > 0.7 ? "offline" : Math.random() > 0.5 ? "away" : "online" // Randomly assign status
+        }));
+      
+      res.json(teammates);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Create HTTP server
+  const httpServer = createServer(app);
+
+  return httpServer;
+}
