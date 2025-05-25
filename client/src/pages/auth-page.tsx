@@ -355,10 +355,10 @@ export default function AuthPage() {
       </div>
       
       {/* Hero Section */}
-      <div className="hidden lg:flex flex-1 bg-primary-900 text-white p-8 items-center justify-center">
+      <div className="hidden lg:flex flex-1 bg-primary-900 p-8 items-center justify-center">
         <div className="max-w-md">
-          <h1 className="text-3xl font-bold mb-4">HR Management Simplified</h1>
-          <p className="text-lg mb-6">
+          <h1 className="text-3xl font-bold mb-4 text-white">HR Management Simplified</h1>
+          <p className="text-lg mb-6 text-slate-200">
             Streamline your HR operations with our comprehensive management system. Manage employees, handle leave requests, and oversee performance reviews all in one place.
           </p>
           <ul className="space-y-2">
@@ -368,7 +368,7 @@ export default function AuthPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span>Role-based access control</span>
+              <span className="text-slate-100 font-medium">Role-based access control</span>
             </li>
             <li className="flex items-center">
               <div className="w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center mr-3">
@@ -376,7 +376,7 @@ export default function AuthPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span>Employee management system</span>
+              <span className="text-slate-100 font-medium">Employee management system</span>
             </li>
             <li className="flex items-center">
               <div className="w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center mr-3">
@@ -384,7 +384,7 @@ export default function AuthPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span>Document management with versioning</span>
+              <span className="text-slate-100 font-medium">Document management with versioning</span>
             </li>
             <li className="flex items-center">
               <div className="w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center mr-3">
