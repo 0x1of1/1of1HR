@@ -13,6 +13,8 @@ import Messages from "@/pages/messages";
 import Documents from "@/pages/documents";
 import JobDescriptions from "@/pages/job-descriptions";
 import PerformanceReviews from "@/pages/performance-reviews";
+import Reports from "@/pages/reports";
+import Settings from "@/pages/settings";
 import { AuthProvider } from "./hooks/use-auth";
 
 function Router() {
@@ -25,6 +27,8 @@ function Router() {
       <ProtectedRoute path="/documents" component={Documents} />
       <ProtectedRoute path="/job-descriptions" component={JobDescriptions} />
       <ProtectedRoute path="/performance-reviews" component={PerformanceReviews} />
+      <ProtectedRoute path="/reports" component={Reports} />
+      <ProtectedRoute path="/settings" component={Settings} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>

@@ -52,17 +52,17 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
   };
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-primary-900 text-white transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:h-screen">
+    <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-white text-black transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:h-screen">
       <div className="flex flex-col h-full">
         {/* Logo and header */}
-        <div className="flex items-center justify-between px-4 py-6 border-b border-slate-700">
+        <div className="flex items-center justify-between px-4 py-6 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <Building className="h-6 w-6 text-accent-500" />
-            <h1 className="text-xl font-bold">HR System</h1>
+            <Building className="h-6 w-6 text-blue-500" />
+            <h1 className="text-xl font-bold text-black">HR System</h1>
           </div>
           {isMobile && (
             <button 
-              className="lg:hidden text-slate-400 hover:text-white" 
+              className="lg:hidden text-gray-600 hover:text-black" 
               onClick={onClose}
             >
               <ChevronDown className="h-5 w-5" />
@@ -71,17 +71,17 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
         </div>
         
         {/* User profile */}
-        <div className="flex items-center gap-3 px-4 py-4 border-b border-slate-700">
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-200">
           <div className="relative">
             <Avatar>
               <AvatarImage src={user.avatarUrl || ""} alt={`${user.firstName} ${user.lastName}`} />
               <AvatarFallback>{user.firstName[0]}{user.lastName[0]}</AvatarFallback>
             </Avatar>
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-primary-900"></div>
+            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
           </div>
           <div className="overflow-hidden">
-            <p className="text-sm font-medium truncate">{user.firstName} {user.lastName}</p>
-            <p className="text-xs text-slate-400 truncate">{user.position}</p>
+            <p className="text-sm font-medium truncate text-black">{user.firstName} {user.lastName}</p>
+            <p className="text-xs text-gray-600 truncate">{user.position}</p>
           </div>
         </div>
         
@@ -95,14 +95,14 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
                       location === item.href
-                        ? "bg-secondary-500 text-white"
-                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-700 hover:bg-gray-100 hover:text-black"
                     )}
                   >
                     {item.icon}
                     <span>{item.label}</span>
                     {item.label === "Messages" && (
-                      <span className="ml-auto bg-accent-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                      <span className="ml-auto bg-blue-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
                         3
                       </span>
                     )}
@@ -115,7 +115,7 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
           {/* Manager tools section */}
           {(isManager || isAdmin) && (
             <div className="mt-6">
-              <h3 className="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <h3 className="px-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Manager Tools
               </h3>
               <ul className="mt-2 space-y-1">
@@ -126,8 +126,8 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
                         className={cn(
                           "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
                           location === item.href
-                            ? "bg-secondary-500 text-white"
-                            : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                            ? "bg-blue-500 text-white"
+                            : "text-gray-700 hover:bg-gray-100 hover:text-black"
                         )}
                       >
                         {item.icon}
@@ -142,10 +142,10 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
         </nav>
         
         {/* Sidebar footer */}
-        <div className="px-4 py-3 border-t border-slate-700">
+        <div className="px-4 py-3 border-t border-gray-200">
           <Button 
             variant="ghost" 
-            className="flex items-center gap-3 w-full justify-start text-slate-300 hover:bg-slate-800 hover:text-white"
+            className="flex items-center gap-3 w-full justify-start text-gray-700 hover:bg-gray-100 hover:text-black"
             onClick={handleLogout}
           >
             <LogOut className="h-5 w-5" />
