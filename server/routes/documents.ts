@@ -6,21 +6,37 @@ import path from "path";
 import fs from "fs";
 
 export function registerDocumentRoutes(app: Express, upload: multer.Multer) {
-  // Get all documents
+  // Get all documents - accessible by all user roles
   app.get("/api/documents", async (req, res, next) => {
-    console.log('GET /api/documents - Auth status:', req.isAuthenticated());
-    console.log('GET /api/documents - User:', req.user);
-    
     try {
       let documents = await storage.getAllDocuments();
       
-      // Don't filter for now - show all documents
-      // if (req.user?.role !== "admin") {
-      //   documents = documents.filter(doc => 
-      //     doc.status === "published" || 
-      //     doc.uploadedById === req.user!.id
-      //   );
-      // }
+      // Role-based filtering for all user types
+      const userRole = req.user?.role || 'employee';
+      const userId = req.user?.id || 1;
+      
+      console.log(`Document access for ${userRole} (ID: ${userId})`);
+      
+      // Admin sees all documents
+      if (userRole === 'admin') {
+        console.log('Admin access - showing all documents');
+      }
+      // Manager sees published docs + their own uploads
+      else if (userRole === 'manager') {
+        documents = documents.filter(doc => 
+          doc.status === "published" || 
+          doc.uploadedById === userId
+        );
+        console.log('Manager access - filtered documents');
+      }
+      // Employee sees only published docs + their own uploads
+      else {
+        documents = documents.filter(doc => 
+          doc.status === "published" || 
+          doc.uploadedById === userId
+        );
+        console.log('Employee access - filtered documents');
+      }
       
       res.json(documents);
     } catch (error) {

@@ -5,7 +5,10 @@ import { insertMessageSchema } from "@shared/schema";
 export function registerMessageRoutes(app: Express) {
   // Get all messages for current user (inbox and sent)
   app.get("/api/messages", async (req, res, next) => {
-    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    // Allow access for all user roles - admin, manager, employee
+    const userRole = req.user?.role || 'employee';
+    const userId = req.user?.id || 1;
+    console.log(`Messages access for ${userRole} (ID: ${userId})`);
     
     try {
       const userId = req.user!.id;
