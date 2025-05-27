@@ -208,46 +208,66 @@ export default function Messages() {
               <CardDescription>Manage your communications</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button 
-                className="w-full mb-4 bg-secondary-600 hover:bg-secondary-700"
-                onClick={() => setIsComposeOpen(true)}
-              >
-                <Plus className="mr-2 h-4 w-4" /> Compose New
-              </Button>
-              
-              <div className="space-y-1">
-                <Button
-                  variant={activeFolder === "inbox" ? "secondary" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => {
-                    setActiveFolder("inbox");
-                    setSelectedMessage(null);
-                  }}
-                >
-                  <Inbox className="mr-2 h-4 w-4" />
-                  Inbox
-                  <span className="ml-auto bg-accent-500 text-white text-xs rounded-full px-2 py-0.5">
-                    {messages?.filter(m => m.receiverId === user?.id && m.status === "unread").length || 0}
-                  </span>
-                </Button>
-                <Button
-                  variant={activeFolder === "sent" ? "secondary" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => {
-                    setActiveFolder("sent");
-                    setSelectedMessage(null);
-                  }}
-                >
-                  <SendIcon className="mr-2 h-4 w-4" />
-                  Sent
-                </Button>
-                <Button
-                  variant={activeFolder === "archived" ? "secondary" : "ghost"}
-                  className="w-full justify-start"
-                >
-                  <Archive className="mr-2 h-4 w-4" />
-                  Archived
-                </Button>
+              <div className="space-y-3">
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-700 mb-2">Quick Actions</h4>
+                  <div className="space-y-1">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start text-xs"
+                      onClick={() => setIsComposeOpen(true)}
+                    >
+                      <MessageCircle className="mr-2 h-3 w-3" /> Message Manager
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start text-xs"
+                      onClick={() => setIsComposeOpen(true)}
+                    >
+                      <MessageCircle className="mr-2 h-3 w-3" /> Contact HR
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-700 mb-2">Messages</h4>
+                  <div className="space-y-1">
+                    <Button
+                      variant={activeFolder === "inbox" ? "secondary" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => {
+                        setActiveFolder("inbox");
+                        setSelectedMessage(null);
+                      }}
+                    >
+                      <Inbox className="mr-2 h-4 w-4" />
+                      Inbox
+                      <span className="ml-auto bg-accent-500 text-white text-xs rounded-full px-2 py-0.5">
+                        {messages?.filter(m => m.receiverId === user?.id && m.status === "unread").length || 0}
+                      </span>
+                    </Button>
+                    <Button
+                      variant={activeFolder === "sent" ? "secondary" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => {
+                        setActiveFolder("sent");
+                        setSelectedMessage(null);
+                      }}
+                    >
+                      <SendIcon className="mr-2 h-4 w-4" />
+                      Sent
+                    </Button>
+                    <Button
+                      variant={activeFolder === "archived" ? "secondary" : "ghost"}
+                      className="w-full justify-start"
+                    >
+                      <Archive className="mr-2 h-4 w-4" />
+                      Archived
+                    </Button>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -2,10 +2,32 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { User } from "@shared/schema";
+import { User, InsertUser, insertUserSchema } from "@shared/schema";
+import { useAuth } from "@/hooks/use-auth";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -44,14 +66,92 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+// Simple form schema for employee management
+const employeeFormSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Valid email is required"),
+  role: z.enum(["admin", "manager", "employee", "customer_support"]),
+  department: z.enum(["hr", "engineering", "marketing", "sales", "product", "finance", "other"]),
+  position: z.string().optional(),
+});
+
+type EmployeeFormValues = z.infer<typeof employeeFormSchema>;
+
 export default function Employees() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState<User | null>(null);
 
   const { data: employees, isLoading } = useQuery<User[]>({
     queryKey: ["/api/employees"],
   });
 
+  // Form for creating/editing employees
+  const form = useForm<EmployeeFormValues>({
+    resolver: zodResolver(employeeFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      role: "employee",
+      department: "other",
+      position: "",
+    },
+  });
+
+  // Create employee mutation
+  const createEmployeeMutation = useMutation({
+    mutationFn: async (data: EmployeeFormValues) => {
+      const res = await apiRequest("POST", "/api/employees", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/employees"] });
+      setIsCreateDialogOpen(false);
+      form.reset();
+      toast({
+        title: "Employee created",
+        description: "New employee has been added successfully.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Update employee mutation
+  const updateEmployeeMutation = useMutation({
+    mutationFn: async (data: EmployeeFormValues & { id: number }) => {
+      const { id, ...updateData } = data;
+      const res = await apiRequest("PUT", `/api/employees/${id}`, updateData);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/employees"] });
+      setEditingEmployee(null);
+      form.reset();
+      toast({
+        title: "Employee updated",
+        description: "Employee information has been updated.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete employee mutation
   const deleteEmployeeMutation = useMutation({
     mutationFn: async (id: number) => {
       await apiRequest("DELETE", `/api/employees/${id}`);
@@ -60,7 +160,7 @@ export default function Employees() {
       queryClient.invalidateQueries({ queryKey: ["/api/employees"] });
       toast({
         title: "Employee deleted",
-        description: "The employee has been successfully deleted.",
+        description: "Employee has been removed from the system.",
       });
     },
     onError: (error: Error) => {
@@ -68,6 +168,33 @@ export default function Employees() {
         title: "Error",
         description: error.message,
         variant: "destructive",
+      });
+    },
+  });
+
+  // Filter employees based on search
+  const filteredEmployees = employees?.filter(employee => {
+    const searchTerm = search.toLowerCase();
+    return (
+      employee.firstName.toLowerCase().includes(searchTerm) ||
+      employee.lastName.toLowerCase().includes(searchTerm) ||
+      employee.email.toLowerCase().includes(searchTerm)
+    );
+  });
+
+  // Get role badge
+  const getRoleBadge = (role: string) => {
+    switch (role) {
+      case "admin":
+        return <Badge className="bg-red-100 text-red-800">Admin</Badge>;
+      case "manager":
+        return <Badge className="bg-blue-100 text-blue-800">Manager</Badge>;
+      case "employee":
+        return <Badge className="bg-green-100 text-green-800">Employee</Badge>;
+      default:
+        return <Badge>{role}</Badge>;
+    }
+  };
       });
     },
   });
