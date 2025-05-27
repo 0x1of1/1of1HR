@@ -498,6 +498,102 @@ PUT /api/documents/:id - Update document metadata
 DELETE /api/documents/:id - Delete document
 ```
 
+### User Approval System
+```
+GET /api/pending-users - Get pending user registrations (Admin/Manager only)
+POST /api/approve-user/:id - Approve user registration
+POST /api/reject-user/:id - Reject user registration
+```
+
+## How To Guides
+
+### Approval-Based User Registration System
+
+#### Overview
+The HR system implements a modern, secure approval-based registration workflow that ensures only authorized personnel gain access to the platform. This system provides multiple security layers and role-based approval processes.
+
+#### Registration Workflow Architecture
+
+**Employee Registration Process:**
+1. **User Application**: New employees visit the registration page and select "Employee" role
+2. **Information Collection**: System collects comprehensive employee data:
+   - Full name, email, phone number
+   - Department selection (Engineering, Marketing, Sales, HR, Finance, Product, Other)
+   - Position/job title and expected start date
+   - Emergency contact information
+   - Personal message explaining access requirements
+3. **Pending Status**: Registration enters "Pending Approval" state
+4. **Notification System**: Automatic notifications sent to Admin AND all Manager users
+5. **Approval Decision**: Any Admin or Manager can approve/reject the registration
+6. **Account Activation**: Upon approval, user receives notification and gains full system access
+
+**Manager Registration Process:**
+1. **Enhanced Security**: Manager applications require Admin-only approval
+2. **Admin Review**: Only Admin users can approve manager registrations
+3. **Elevated Permissions**: Approved managers gain access to approval workflows and team management
+
+#### User Approval Dashboard
+
+**Accessing Approvals:**
+- Available to Admin and Manager roles only
+- Navigate to "User Approvals" section in main navigation
+- Real-time view of all pending registrations
+
+**Approval Interface Features:**
+- **Detailed User Cards**: Complete registration information display
+- **Role-Based Badges**: Clear visual indicators for employee vs manager applications
+- **Department Color Coding**: Easy identification of applicant departments
+- **Contact Information**: Full contact details including emergency contacts
+- **Registration Timeline**: Application date and timeline tracking
+- **One-Click Actions**: Approve or reject with single button press
+- **Real-Time Updates**: Automatic refresh after approval decisions
+
+#### Security Features
+
+**Role-Based Access Control:**
+- Admin: Can approve both employees and managers
+- Manager: Can approve employees only
+- Employee: No approval permissions
+
+**Authentication Requirements:**
+- All approval endpoints require active authentication
+- Session validation on every approval action
+- Audit trail for all approval decisions
+
+**Data Validation:**
+- Email uniqueness verification
+- Username collision prevention
+- Required field validation
+- Department and role validation
+
+#### Benefits of This Architecture
+
+**Security Benefits:**
+- Prevents unauthorized access to HR systems
+- Multi-layer approval process ensures legitimate users
+- Audit trail for compliance and security reviews
+- Role-based permissions prevent privilege escalation
+
+**Operational Benefits:**
+- Streamlined onboarding process for new employees
+- Centralized approval dashboard for managers
+- Automated notification system reduces manual work
+- Clear workflow for HR administrators
+
+**User Experience Benefits:**
+- Self-service registration process
+- Clear status communication to applicants
+- Professional approval interface for managers
+- Real-time updates and notifications
+
+### Testing the Approval Workflow
+1. **Register New User**: Visit registration page, select role, fill comprehensive form
+2. **Admin/Manager Login**: Use admin or manager credentials to access system
+3. **Navigate to Approvals**: Go to "User Approvals" section in navigation
+4. **Review Applications**: See detailed user information cards with all registration data
+5. **Make Approval Decision**: Click "Approve" or "Reject" with one-click actions
+6. **Verify Notifications**: Check that users receive appropriate status notifications
+
 ### Notifications
 ```
 GET /api/notifications - Get user notifications

@@ -15,6 +15,7 @@ import JobDescriptions from "@/pages/job-descriptions";
 import PerformanceReviews from "@/pages/performance-reviews";
 import Reports from "@/pages/reports";
 import Settings from "@/pages/settings";
+import UserApprovals from "@/pages/user-approvals";
 import { AuthProvider } from "./hooks/use-auth";
 
 function Router() {
@@ -27,6 +28,7 @@ function Router() {
       <ProtectedRoute path="/documents" component={Documents} />
       <ProtectedRoute path="/job-descriptions" component={JobDescriptions} />
       <ProtectedRoute path="/performance-reviews" component={PerformanceReviews} />
+      <ProtectedRoute path="/user-approvals" component={UserApprovals} />
       <ProtectedRoute path="/reports" component={Reports} />
       <ProtectedRoute path="/settings" component={Settings} />
       <Route path="/auth" component={AuthPage} />
