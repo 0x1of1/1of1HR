@@ -109,7 +109,6 @@ export default function LeaveRequests() {
         employeeId: user.id,
         startDate: data.startDate,
         endDate: data.endDate,
-        type: data.type,
         reason: data.reason,
       });
       return res.json();
@@ -172,15 +171,27 @@ export default function LeaveRequests() {
     },
   });
 
+  // Helper function to get employee name
+  const getEmployeeName = (employeeId: number) => {
+    const employee = users?.find(u => u.id === employeeId);
+    return employee ? `${employee.firstName} ${employee.lastName}` : "Unknown Employee";
+  };
+
   const filteredRequests = leaveRequests?.filter((request) => {
     // Apply status filter
     if (statusFilter !== "all" && request.status !== statusFilter) {
       return false;
     }
     
-    // Apply search filter (implementation would depend on what fields you want to search)
-    if (search && !request.reason.toLowerCase().includes(search.toLowerCase())) {
-      return false;
+    // Apply search filter
+    if (search) {
+      const employeeName = getEmployeeName(request.employeeId).toLowerCase();
+      const reason = request.reason.toLowerCase();
+      const searchTerm = search.toLowerCase();
+      
+      if (!employeeName.includes(searchTerm) && !reason.includes(searchTerm)) {
+        return false;
+      }
     }
     
     return true;
@@ -220,29 +231,75 @@ export default function LeaveRequests() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-              <Dialog>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button size="sm" className="bg-secondary-600 hover:bg-secondary-700">
                     <Plus className="h-4 w-4 mr-1" /> New Request
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-w-md">
                   <DialogHeader>
                     <DialogTitle>Request Leave</DialogTitle>
                     <DialogDescription>
                       Submit a new leave request for approval.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    {/* Leave request form fields would go here */}
-                    <p className="text-sm text-slate-500">
-                      Leave request form implementation will go here.
-                    </p>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="outline">Cancel</Button>
-                    <Button>Submit Request</Button>
-                  </DialogFooter>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit((data) => createRequestMutation.mutate(data))} className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="startDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Start Date</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="endDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>End Date</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="reason"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Reason</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Please provide the reason for your leave request..."
+                                className="min-h-[100px]"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <DialogFooter>
+                        <Button variant="outline" type="button" onClick={() => setIsDialogOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button type="submit" disabled={createRequestMutation.isPending}>
+                          {createRequestMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                          Submit Request
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </Form>
                 </DialogContent>
               </Dialog>
             </div>
@@ -308,6 +365,16 @@ function LeaveRequestsTable({
   rejectRequest,
   getStatusBadge
 }: LeaveRequestsTableProps) {
+  // Get all users for employee names
+  const { data: users } = useQuery<User[]>({
+    queryKey: ["/api/users"],
+  });
+
+  // Helper function to get employee name
+  const getEmployeeName = (employeeId: number) => {
+    const employee = users?.find(u => u.id === employeeId);
+    return employee ? `${employee.firstName} ${employee.lastName}` : "Unknown Employee";
+  };
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -338,7 +405,7 @@ function LeaveRequestsTable({
               
               return (
                 <TableRow key={request.id}>
-                  <TableCell>Employee Name</TableCell>
+                  <TableCell>{getEmployeeName(request.employeeId)}</TableCell>
                   <TableCell>{format(new Date(request.createdAt), 'MMM d, yyyy')}</TableCell>
                   <TableCell>
                     {format(start, 'MMM d, yyyy')} - {format(end, 'MMM d, yyyy')}
