@@ -2,10 +2,22 @@ import { useState } from "react";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Document as DocType, documentStatusEnum } from "@shared/schema";
+import { Document as DocType, User, insertDocumentSchema } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+// Form schema for document upload
+const documentFormSchema = z.object({
+  title: z.string().min(1, "Title is required").max(100, "Title too long"),
+  description: z.string().optional(),
+  status: z.enum(["draft", "published", "archived"]),
+});
+
+type DocumentFormValues = z.infer<typeof documentFormSchema>;
 
 import {
   Table,
