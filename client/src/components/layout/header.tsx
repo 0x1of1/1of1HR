@@ -48,25 +48,98 @@ export function Header({ onOpenSidebar }: HeaderProps) {
         
         <div className="flex items-center gap-3">
           {/* Notifications */}
-          <div className="relative">
-            <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700 rounded-full">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-accent-500 rounded-full"></span>
-            </Button>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700 rounded-full relative">
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-80">
+              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <div className="p-4 text-sm text-gray-500">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <div>
+                      <p className="font-medium text-black">New leave request</p>
+                      <p className="text-xs text-gray-400">John Doe submitted a leave request</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                    <div>
+                      <p className="font-medium text-black">Performance review due</p>
+                      <p className="text-xs text-gray-400">Quarterly review for Sarah Wilson</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           {/* Messages */}
-          <div className="relative">
-            <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700 rounded-full">
-              <MessageSquare className="h-5 w-5" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-accent-500 rounded-full"></span>
-            </Button>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700 rounded-full relative">
+                <MessageSquare className="h-5 w-5" />
+                <span className="absolute top-0 right-0 w-2 h-2 bg-blue-500 rounded-full"></span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-80">
+              <DropdownMenuLabel>Messages</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <div className="p-4 text-sm">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-medium text-blue-600">JD</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-black">John Doe</p>
+                      <p className="text-xs text-gray-500">Meeting scheduled for tomorrow</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-medium text-green-600">SW</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-black">Sarah Wilson</p>
+                      <p className="text-xs text-gray-500">Thanks for the feedback!</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                onClick={() => {
+                  window.history.pushState(null, "", "/messages");
+                  window.dispatchEvent(new PopStateEvent("popstate"));
+                }}
+                className="cursor-pointer"
+              >
+                View all messages
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           {/* Help */}
-          <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700 rounded-full">
-            <HelpCircle className="h-5 w-5" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700 rounded-full">
+                <HelpCircle className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Help & Support</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Documentation</DropdownMenuItem>
+              <DropdownMenuItem>Contact Support</DropdownMenuItem>
+              <DropdownMenuItem>Keyboard Shortcuts</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           {/* Divider */}
           <Separator orientation="vertical" className="h-8 mx-2" />
@@ -74,7 +147,7 @@ export function Header({ onOpenSidebar }: HeaderProps) {
           {/* User menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-secondary-600">
+              <Button variant="ghost" className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900">
                 <span className="hidden md:inline-block">{user.firstName} {user.lastName}</span>
                 <ChevronDown className="h-4 w-4" />
               </Button>
@@ -82,10 +155,26 @@ export function Header({ onOpenSidebar }: HeaderProps) {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => {
+                  window.history.pushState(null, "", "/settings");
+                  window.dispatchEvent(new PopStateEvent("popstate"));
+                }}
+                className="cursor-pointer"
+              >
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => {
+                  window.history.pushState(null, "", "/settings");
+                  window.dispatchEvent(new PopStateEvent("popstate"));
+                }}
+                className="cursor-pointer"
+              >
+                Settings
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
+              <DropdownMenuItem onClick={() => logoutMutation.mutate()} className="cursor-pointer">
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
