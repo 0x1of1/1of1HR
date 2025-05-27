@@ -44,10 +44,12 @@ export function setupAuth(app: Express) {
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-    }
+      secure: false, // Set to false for development
+      httpOnly: false, // Allow client-side access for debugging
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'lax'
+    },
+    name: 'connect.sid' // Explicit session name
   };
 
   app.set("trust proxy", 1);
@@ -149,6 +151,9 @@ export function setupAuth(app: Express) {
   });
 
   app.get("/api/user", (req, res) => {
+    console.log('Session check - isAuthenticated:', req.isAuthenticated());
+    console.log('Session ID:', req.sessionID);
+    console.log('Session data:', req.session);
     if (!req.isAuthenticated()) return res.sendStatus(401);
     res.json(req.user);
   });
