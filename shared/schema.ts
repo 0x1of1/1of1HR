@@ -5,6 +5,7 @@ import { relations } from "drizzle-orm";
 
 // Enums
 export const userRoleEnum = pgEnum('user_role', ['admin', 'manager', 'employee', 'customer_support']);
+export const userStatusEnum = pgEnum('user_status', ['pending', 'approved', 'rejected', 'active']);
 export const leaveRequestStatusEnum = pgEnum('leave_request_status', ['pending', 'approved', 'rejected']);
 export const documentStatusEnum = pgEnum('document_status', ['draft', 'published', 'archived']);
 export const priorityEnum = pgEnum('priority', ['low', 'medium', 'high', 'urgent']);
@@ -19,9 +20,16 @@ export const users = pgTable("users", {
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email").notNull().unique(),
+  phone: text("phone"),
   role: userRoleEnum("role").notNull().default('employee'),
+  status: userStatusEnum("status").notNull().default('pending'),
   department: departmentEnum("department").notNull(),
   position: text("position").notNull(),
+  emergencyContact: text("emergency_contact"),
+  emergencyPhone: text("emergency_phone"),
+  startDate: timestamp("start_date"),
+  registrationMessage: text("registration_message"),
+  approvedBy: integer("approved_by").references(() => users.id),
   avatarUrl: text("avatar_url"),
   managerId: integer("manager_id").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -34,7 +42,12 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     fields: [users.managerId],
     references: [users.id],
   }),
-  employees: many(users),
+  approver: one(users, {
+    fields: [users.approvedBy],
+    references: [users.id],
+  }),
+  employees: many(users, { relationName: "manager" }),
+  approvedUsers: many(users, { relationName: "approver" }),
   jobDescription: one(jobDescriptions, {
     fields: [users.id],
     references: [jobDescriptions.employeeId],
@@ -224,7 +237,20 @@ export const departmentStats = pgTable("department_stats", {
 // Schema Validations
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
+  status: true,
+  approvedBy: true,
   createdAt: true, 
+  updatedAt: true
+});
+
+// Registration schema for new users (includes additional approval fields)
+export const registrationSchema = createInsertSchema(users).omit({
+  id: true,
+  status: true,
+  approvedBy: true,
+  managerId: true,
+  avatarUrl: true,
+  createdAt: true,
   updatedAt: true
 });
 
@@ -283,6 +309,7 @@ export const insertDepartmentStatsSchema = createInsertSchema(departmentStats).o
 
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type RegistrationData = z.infer<typeof registrationSchema>;
 export type User = typeof users.$inferSelect;
 
 export type InsertJobDescription = z.infer<typeof insertJobDescriptionSchema>;
