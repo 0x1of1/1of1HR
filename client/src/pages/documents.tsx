@@ -258,6 +258,35 @@ export default function Documents() {
     }
   };
 
+  // Handle download
+  const handleDownload = (id: number, title: string, fileType: string) => {
+    console.log('Downloading document:', id, title);
+    const downloadUrl = `/api/documents/${id}/download`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `${title}.${fileType}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Handle view document
+  const handleView = (doc: DocType) => {
+    console.log('Viewing document:', doc.title);
+    const viewUrl = `/api/documents/${doc.id}/download`;
+    window.open(viewUrl, '_blank');
+  };
+
+  // Handle edit document details
+  const handleEdit = (doc: DocType) => {
+    console.log('Editing document:', doc.title);
+    // Set form values for editing
+    form.setValue("title", doc.title);
+    form.setValue("description", doc.description || "");
+    form.setValue("status", doc.status);
+    setUploadDialogOpen(true);
+  };
+
   return (
     <MainLayout title="Documents" subtitle="Manage and organize company documents">
       <div className="space-y-6">
@@ -454,15 +483,15 @@ export default function Documents() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleView(doc)}>
                             <Eye className="h-4 w-4 mr-2" />
                             View
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDownload(doc.id, doc.title, doc.fileType)}>
                             <Download className="h-4 w-4 mr-2" />
                             Download
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEdit(doc)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Details
                           </DropdownMenuItem>

@@ -28,6 +28,81 @@ export function registerDocumentRoutes(app: Express, upload: multer.Multer) {
     }
   });
 
+  // Download document file
+  app.get("/api/documents/:id/download", async (req, res, next) => {
+    console.log('Download document request for ID:', req.params.id);
+    
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      const document = await storage.getDocument(id);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      const filePath = path.join(process.cwd(), 'uploads', path.basename(document.fileUrl));
+      console.log('Attempting to download file from:', filePath);
+      
+      // Check if file exists
+      if (!fs.existsSync(filePath)) {
+        console.log('File not found at path:', filePath);
+        return res.status(404).json({ message: "File not found on server" });
+      }
+
+      // Set appropriate headers for download
+      res.setHeader('Content-Disposition', `attachment; filename="${document.title}.${document.fileType}"`);
+      res.setHeader('Content-Type', 'application/octet-stream');
+      
+      // Stream the file
+      const fileStream = fs.createReadStream(filePath);
+      fileStream.pipe(res);
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      next(error);
+    }
+  });
+
+  // Delete document
+  app.delete("/api/documents/:id", async (req, res, next) => {
+    console.log('Delete document request for ID:', req.params.id);
+    
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      const document = await storage.getDocument(id);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      // Delete the file from disk
+      const filePath = path.join(process.cwd(), 'uploads', path.basename(document.fileUrl));
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log('Deleted file from disk:', filePath);
+      }
+
+      // Delete from database
+      const deleted = await storage.deleteDocument(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      console.log('Document deleted successfully:', id);
+      res.json({ message: "Document deleted successfully" });
+      
+    } catch (error) {
+      console.error('Delete error:', error);
+      next(error);
+    }
+  });
+
   // Get document by ID
   app.get("/api/documents/:id", async (req, res, next) => {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
