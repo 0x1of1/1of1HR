@@ -2,7 +2,7 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { LeaveRequest } from "@shared/schema";
+import { LeaveRequest, User, insertLeaveRequestSchema } from "@shared/schema";
 import { format } from "date-fns";
 import { 
   MoreHorizontal, 
@@ -10,12 +10,27 @@ import {
   Search, 
   Check, 
   X, 
-  Calendar
+  Calendar,
+  Loader2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { 
   Dialog,
   DialogContent,
@@ -50,13 +65,71 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+// Form schema for leave request
+const leaveRequestFormSchema = z.object({
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z.string().min(1, "End date is required"),
+  reason: z.string().min(1, "Reason is required").max(500, "Reason is too long"),
+});
+
+type LeaveRequestFormValues = z.infer<typeof leaveRequestFormSchema>;
+
 export default function LeaveRequests() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data: leaveRequests, isLoading } = useQuery<LeaveRequest[]>({
     queryKey: ["/api/leave-requests"],
+  });
+
+  // Get all users for employee names
+  const { data: users } = useQuery<User[]>({
+    queryKey: ["/api/users"],
+  });
+
+  // Form for new leave request
+  const form = useForm<LeaveRequestFormValues>({
+    resolver: zodResolver(leaveRequestFormSchema),
+    defaultValues: {
+      startDate: "",
+      endDate: "",
+      reason: "",
+    },
+  });
+
+  // Create leave request mutation
+  const createRequestMutation = useMutation({
+    mutationFn: async (data: LeaveRequestFormValues) => {
+      if (!user) throw new Error("User not authenticated");
+      
+      const res = await apiRequest("POST", "/api/leave-requests", {
+        employeeId: user.id,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        type: data.type,
+        reason: data.reason,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/leave-requests"] });
+      setIsDialogOpen(false);
+      form.reset();
+      toast({
+        title: "Request submitted",
+        description: "Your leave request has been submitted for approval.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   const approveRequestMutation = useMutation({
