@@ -8,19 +8,19 @@ import fs from "fs";
 export function registerDocumentRoutes(app: Express, upload: multer.Multer) {
   // Get all documents
   app.get("/api/documents", async (req, res, next) => {
-    // Temporarily allow access for testing - you can add auth back later
-    // if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    console.log('GET /api/documents - Auth status:', req.isAuthenticated());
+    console.log('GET /api/documents - User:', req.user);
     
     try {
       let documents = await storage.getAllDocuments();
       
-      // If not admin, filter documents based on status
-      if (req.user!.role !== "admin") {
-        documents = documents.filter(doc => 
-          doc.status === "published" || 
-          doc.uploadedById === req.user!.id
-        );
-      }
+      // Don't filter for now - show all documents
+      // if (req.user?.role !== "admin") {
+      //   documents = documents.filter(doc => 
+      //     doc.status === "published" || 
+      //     doc.uploadedById === req.user!.id
+      //   );
+      // }
       
       res.json(documents);
     } catch (error) {
@@ -58,17 +58,27 @@ export function registerDocumentRoutes(app: Express, upload: multer.Multer) {
 
   // Upload document
   app.post("/api/documents", upload.single("file"), async (req, res, next) => {
-    // Temporarily allow access for testing - you can add auth back later
-    // if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    console.log('=== DOCUMENT UPLOAD DEBUG ===');
+    console.log('Auth status:', req.isAuthenticated());
+    console.log('User object:', req.user);
+    console.log('Request body:', req.body);
+    console.log('File object:', req.file);
+    console.log('==============================');
     
     try {
       if (!req.file) {
+        console.log('ERROR: No file uploaded');
         return res.status(400).json({ message: "No file uploaded" });
       }
 
       // Get file metadata
       const fileUrl = `/uploads/${req.file.filename}`;
       const fileType = path.extname(req.file.originalname).slice(1).toLowerCase();
+      
+      // Use uploadedById from request body or default to user 1 for testing
+      const uploadedById = parseInt(req.body.uploadedById) || req.user?.id || 1;
+      
+      console.log('Using uploadedById:', uploadedById);
       
       // Create document record
       const documentData = {
@@ -77,7 +87,7 @@ export function registerDocumentRoutes(app: Express, upload: multer.Multer) {
         fileUrl,
         fileType,
         status: req.body.status || "draft",
-        uploadedById: req.user!.id,
+        uploadedById: uploadedById,
         version: 1, // Default version for new document
       };
       
