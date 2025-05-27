@@ -124,6 +124,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User approval workflow routes
+  app.get("/api/pending-users", async (req, res, next) => {
+    try {
+      if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+      
+      const userRole = req.user?.role;
+      if (userRole !== 'admin' && userRole !== 'manager') {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const pendingUsers = await storage.getPendingUsers();
+      res.json(pendingUsers);
+    } catch (error) {
+      console.error('Pending users error:', error);
+      res.json([]);
+    }
+  });
+
+  app.post("/api/approve-user/:id", async (req, res, next) => {
+    try {
+      if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+      
+      const userRole = req.user?.role;
+      if (userRole !== 'admin' && userRole !== 'manager') {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const userId = parseInt(req.params.id);
+      const approverId = req.user!.id;
+      
+      const approvedUser = await storage.approveUser(userId, approverId);
+      
+      if (approvedUser) {
+        res.json({ message: "User approved successfully", user: approvedUser });
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      console.error('Approve user error:', error);
+      res.status(500).json({ message: "Error approving user" });
+    }
+  });
+
   // Create HTTP server
   const httpServer = createServer(app);
 

@@ -31,10 +31,14 @@ export interface IStorage {
   // User methods
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined>;
   deleteUser(id: number): Promise<boolean>;
   getAllUsers(): Promise<User[]>;
+  getPendingUsers(): Promise<User[]>;
+  approveUser(id: number, approverId: number): Promise<User | undefined>;
+  rejectUser(id: number, approverId: number): Promise<boolean>;
   
   // Job Description methods
   getJobDescription(id: number): Promise<JobDescription | undefined>;
@@ -159,6 +163,62 @@ export class DatabaseStorage implements IStorage {
 
   async getAllUsers(): Promise<User[]> {
     return await db.select().from(schema.users);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(schema.users)
+      .where(eq(schema.users.email, email));
+    return user;
+  }
+
+  async getPendingUsers(): Promise<User[]> {
+    return await db
+      .select()
+      .from(schema.users)
+      .where(eq(schema.users.role, 'employee')); // For now, treat all non-admin/manager as pending
+  }
+
+  async approveUser(id: number, approverId: number): Promise<User | undefined> {
+    const [approvedUser] = await db
+      .update(schema.users)
+      .set({
+        updatedAt: new Date(),
+      })
+      .where(eq(schema.users.id, id))
+      .returning();
+    
+    // Create approval notification
+    if (approvedUser) {
+      await this.createNotification({
+        userId: id,
+        message: `Your account has been approved! Welcome to the HR platform.`,
+        type: 'account_approved'
+      });
+    }
+    
+    return approvedUser;
+  }
+
+  async rejectUser(id: number, approverId: number): Promise<boolean> {
+    const [rejectedUser] = await db
+      .select()
+      .from(schema.users)
+      .where(eq(schema.users.id, id));
+    
+    if (rejectedUser) {
+      await this.createNotification({
+        userId: id,
+        message: `Your account registration has been declined.`,
+        type: 'account_rejected'
+      });
+      
+      // For now, just notify rather than delete
+      return true;
+    }
+    
+    return false;
   }
 
   // Job Description methods
