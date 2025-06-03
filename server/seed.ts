@@ -31,12 +31,15 @@ export async function seedTestUsers() {
         firstName: 'Admin',
         lastName: 'User',
         email: 'admin@example.com',
-        role: 'admin',
-        department: 'hr',
+        role: 'admin' as const,
+        status: 'active' as const,
+        department: 'hr' as const,
         position: 'Administrator',
-        hireDate: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
+        startDate: new Date(),
+        phone: '+1-555-0101',
+        emergencyContact: 'Admin Emergency',
+        emergencyPhone: '+1-555-0102',
+        registrationMessage: 'System administrator account'
       },
       {
         username: 'manager',
@@ -44,12 +47,15 @@ export async function seedTestUsers() {
         firstName: 'Manager',
         lastName: 'User',
         email: 'manager@example.com',
-        role: 'manager',
-        department: 'engineering',
+        role: 'manager' as const,
+        status: 'active' as const,
+        department: 'engineering' as const,
         position: 'Engineering Manager',
-        hireDate: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
+        startDate: new Date(),
+        phone: '+1-555-0201',
+        emergencyContact: 'Manager Emergency',
+        emergencyPhone: '+1-555-0202',
+        registrationMessage: 'Team management responsibilities'
       },
       {
         username: 'employee',
@@ -57,12 +63,15 @@ export async function seedTestUsers() {
         firstName: 'Employee',
         lastName: 'User',
         email: 'employee@example.com',
-        role: 'employee',
-        department: 'sales',
+        role: 'employee' as const,
+        status: 'active' as const,
+        department: 'sales' as const,
         position: 'Sales Representative',
-        hireDate: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
+        startDate: new Date(),
+        phone: '+1-555-0301',
+        emergencyContactName: 'Employee Emergency',
+        emergencyContactPhone: '+1-555-0302',
+        accessReason: 'Standard employee access'
       }
     ];
     
